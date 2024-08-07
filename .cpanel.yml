@@ -1,7 +1,7 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/u820vxpi/deploy.deployprojek.my.id/
+    - export DEPLOYPATH=/home/u820vxpi/public_html/deploy.deployprojek.my.id/
     - /bin/cp -R app $DEPLOYPATH
     - /bin/cp -R bootstrap $DEPLOYPATH
     - /bin/cp -R config $DEPLOYPATH
