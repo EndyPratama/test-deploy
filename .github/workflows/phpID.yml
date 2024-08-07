@@ -1,0 +1,63 @@
+name: 🚀 Deploy on Website
+
+on:
+  push:
+    branches:
+      - 'main'
+      - 'release'
+    tags:
+      - 'v*'
+
+jobs:
+  set-var:
+    runs-on: ubuntu-latest
+    outputs:
+      branch: ${{ steps.set-branch-name.outputs.branch }}
+      url: ${{ steps.set-url-name.outputs.url }}
+    steps:
+      - name: Set branch name
+        id: set-branch-name
+        run: |
+          if [[ "${GITHUB_REF}" == "refs/tags/v*" ]]; then
+             echo "branch=tag" >> $GITHUB_OUTPUT
+          elif [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
+            echo "branch=main" >> $GITHUB_OUTPUT
+          elif [[ "${GITHUB_REF}" == "refs/heads/release" ]]; then
+            echo "branch=release" >> $GITHUB_OUTPUT
+          else
+            echo "branch=else-tag" >> $GITHUB_OUTPUT
+          fi
+          
+      - name: Set URL
+        id: set-url-name
+        run: |
+          if [[ "${GITHUB_REF}" =~ ^refs/tags/v ]]; then
+            echo "url=testing-ci.heyyoapi.xyz" >> $GITHUB_OUTPUT
+          elif [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
+            echo "url=dev-testing-ci.heyyoapi.xyz" >> $GITHUB_OUTPUT
+          elif [[ "${GITHUB_REF}" == "refs/heads/release" ]]; then
+            echo "url=release-testing-ci.heyyoapi.xyz" >> $GITHUB_OUTPUT
+          else
+            echo "url=else-testing-ci.heyyoapi.xyz" >> $GITHUB_OUTPUT
+          fi
+
+  deploy:
+    name: 🎉 Build & Deploy
+    needs: [set-var]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Use branch name
+        run: echo "The current branch is ${{ needs.set-var.outputs.branch }}"
+
+      - name: Use URL
+        run: echo "The current URL is ${{ needs.set-var.outputs.url }}"
+
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v3
+
+      - name: Check branch
+        run: echo "Deploying for branch ${{ needs.set-var.outputs.branch }}"
+
+      - name: Check URL
+        run: echo "Using URL ${{ needs.set-var.outputs.url }}"
+        # admin:96icmJqu!ZT3tuA

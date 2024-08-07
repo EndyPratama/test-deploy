@@ -1,0 +1,43 @@
+name: 🚀 Deploy website on Development
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    name: 📦 Build
+    runs-on: ubuntu-latest
+    steps:
+    - name: 🚚 Get latest code
+      uses: actions/checkout@v3
+    - name: 🔎 Validate composer.json and composer.lock
+      run: composer validate --strict
+    - name: 🔎 Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v3
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
+    - name: ⌛ Install dependencies
+      run: composer install --prefer-dist --no-progress
+            
+  discord:
+    name: 📩 Sent Notify Discord
+    # needs: [deploy]
+    runs-on: ubuntu-latest
+    steps: 
+    - name: Send on Success ✅
+      if: success()
+      uses: discord-actions/message@v2
+      with:
+        webhookUrl: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        message: "Hello, ${{ github.event.pull_request.user.login }} build success ✅"
+    - name: Send on failure
+      if: faillure()
+      uses: discord-actions/message@v2
+      with:
+        webhookUrl: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        message: "Hello, ${{ github.event.pull_request.user.login }} build failled ❌"

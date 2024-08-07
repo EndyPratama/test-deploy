@@ -1,7 +1,7 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/u820vxpi/public_html/abc.deployprojek.my.id/
+    - export DEPLOYPATH=/home/heyyoaca/dev-deploy-svc.heyyoapi.xyz/
     - /bin/cp -R app $DEPLOYPATH
     - /bin/cp -R bootstrap $DEPLOYPATH
     - /bin/cp -R config $DEPLOYPATH

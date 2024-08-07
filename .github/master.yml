@@ -1,0 +1,19 @@
+# name: CI -> Deploy to My website
+# on:
+#   push:
+#     branches: [ master ]
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v2
+#       # Here is the deployment action
+#       - name: Upload from public_html via FTP
+#         uses: airvzxf/ftp-deployment-action@latest
+#         with:
+#           server: verona.sg.domainesia.com
+#           user: ${{ secrets.ftp_username }}
+#           password: ${{ secrets.ftp_password }}
+#           local_dir: "./"
+#           remote_dir: "/home/heyyoaca/test-deploy.heyyoapi.xyz"
+#           delete: "false"
